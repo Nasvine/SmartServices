@@ -1,0 +1,707 @@
+<p>
+       
+  <a href="{{ route('messages.gestionnaire.message_write', {data.data["message"]}) }}"><i class="fa fa-circle-o me-3 font-success"></i>`+data.data["message"]+`</a>
+  
+  <span class="pull-right"></span>
+</p>
+
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore quas rem ipsum odio error laborum corrupti voluptas voluptates doloribus suscipit. Est possimus dolorem, voluptate id sint odit autem consequatur blanditiis!
+
+
+
+
+
+style="color: #fe9003;"
+
+style="background-color: #fe9003; color:white"
+
+{{ asset('images/logo.png') }}
+
+{{ asset('simple_image.png') }}
+
+
+@foreach($livraisons as $k => $livraison)
+          @if ($livraison->status_livraison == "Rejeter" || $livraison->status_livraison == "Payée")
+
+            
+          @else
+            <div class="col-xl-5 col-sm-6">
+                <div class="card">
+                  <div class="modal fade editlivraison_{{ $livraison->id }}" tabindex="-1" restaurant="dialog" aria-labelledby="editlivraison_{{ $livraison->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title" id="myLargeModalLabel">Formulaire pour modifier une livraison</h4>
+                          <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <form class="needs-validation" action="{{ route('livraison.client.update_livraison_simple', $livraison->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+
+                            @method('PUT')
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                  <label class="form-label" for="validationCustom01">Adresse de départ</label>
+                                  <input class="form-control" id="validationCustom01" type="text" name="adresse_depart" value="{{ $livraison->adresse_depart }}">
+                                  @error('adresse_depart')
+                                  <span class="text-danger">{{ $message }}</span>
+                                  @enderror
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="form-label" for="validationCustom01">Adresse de livraison</label>
+                                  <input class="form-control" id="validationCustom01" type="text" name="adresse_arrivee" value="{{ $livraison->adresse_arrivee }}">
+                                  @error('adresse_livraison')
+                                  <span class="text-danger">{{ $message }}</span>
+                                  @enderror
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                              <div class="col-md-6">Type de Colis</label>
+                                <select class="form-select col-sm-6" name="type_de_colis" id="validationCustom01">
+                                  <option value="">Selectionner le type de colis</option>
+                                  <option value="Document et livre" @selected(old('type_de_colis') == "Document et livre")>Document et livre</option>
+                                  <option value="Nourriture et boisson" @selected(old('type_de_colis') == "Nourriture et boisson")>Nourriture et boisson</option>
+                                  <option value="Habit et accessoire" @selected(old('type_de_colis') == "Habit et accessoire")>Habit et accessoire</option>
+                                  <option value="Fourniture de maison" @selected(old('type_de_colis') == "Fourniture de maison")>Fourniture de maison</option>
+                                  <option value="Appareil électronique" @selected(old('type_de_colis') == "Appareil électronique")>Appareil électronique</option>
+                                  <option value="Fourniture de bureau" @selected(old('type_de_colis') == "Fourniture de bureau")>Fourniture de bureau</option>
+                                  <option value="Produit pharmaceutique" @selected(old('type_de_colis') == "Produit pharmaceutique")>Produit pharmaceutique</option>
+                                </select>
+                                @error('type_de_colis')
+                                  <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                              </div>
+                              <div class="col-md-6">
+                                <label class="form-label" for="validationCustom01">Message au livreur</label>
+                                <textarea class="form-control" id="validationCustom01" type="text" name="messageLivreur" id="" cols="5" rows="5"></textarea>
+                                @error('messageLivreur')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                              </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="col-md-8">
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button class="btn" style="background-color: #fe9003; color: #ffffff" type="submit">Valider</button>
+                                </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card-header" style="background-color: rgb(231, 228, 228)">
+                    @if ($livraison->status_livraison == "en cours de validation")
+                    <div class="ribbon ribbon-success">En cours de validation</div>
+                    @elseif ($livraison->status_livraison == "Valider")
+                      <div class="ribbon ribbon-success">Valider</div>
+                    @elseif ($livraison->status_livraison == "en cours de livraison" || $livraison->status_livraison == "Démarrer")
+                      <div class="ribbon ribbon-success">En cours</div>
+                    @elseif ($livraison->status_livraison == "Terminer")
+                      <div class="ribbon ribbon-warning">Payement</div>
+                    @elseif ($livraison->status_livraison == "Non payée")
+                      <div class="ribbon ribbon-warning">En cours de confirmation</div>
+                    @elseif ($livraison->status_livraison == "Payée")
+                      <div class="ribbon ribbon-warning">Livraison Terminer</div>
+                    @endif
+                    <div class="ribbon ribbon-primary ribbon-right"> +229 {{ $livraison->user->profile->phone }}</div>
+                          
+                    <div class="text-primary text-center pt-3">
+                      <h5 class="text-center">
+                        {{ $livraison->titre }}
+                        </h5>
+                    </div>
+                  </div>
+                  <div class="card-body" style="background-color: rgb(241, 241, 241)">
+                      <h6><u>Adresse de Départ:</u></h6>
+                      <p>{{ $livraison->adresse_depart }}</p>
+                      <h6><u>Adresse d'arrivée:</u></h6>
+                      <p>{{ $livraison->adresse_arrivee }}</p>
+                      @if ($livraison->status_livraison == "Valider" || $livraison->status_livraison == "en cours de livraison" || $livraison->status_livraison == "Démarrer" || $livraison->status_livraison == "Terminer" || $livraison->status_livraison == "Non payée" || $livraison->status_livraison == "Payée")
+                        <h6><u>Prix de la livraison:</u></h6>
+                        <p>{{ $livraison->prix }}</p>
+                      @endif
+                      @if (isset($livraison->type_de_colis) && isset($livraison->messageLivreur))
+                        <h6><u>Type de colis:</u></h6>
+                        <p>{{ $livraison->type_de_colis }}</p>
+                        <h6><u>Message au Livreur:</u></h6>
+                        <p>{{ $livraison->messageLivreur }}</p>
+                      @else
+                        <h6><u>Liste des produits et Prix:</u></h6>
+                        <p>
+                          @if (!empty($livraison->commande->ligne_commandes))
+                            @foreach ($livraison->commande->ligne_commandes as $key => $value) 
+                                  <table class="table" border="1px">
+                                      <tr>
+                                          <td>{{ $value->nom_du_produit }}</td>
+                                          <td class="text-center">{{ $value->prix }} FCFA</td>
+                                      </tr>
+                                  </table>
+                              @endforeach
+                          @else
+                                  <table class="table" border="1px">
+                                      <tr>
+                                          <td>Pas de Produit</td>
+                                      </tr>
+                                  </table>
+                          @endif
+                        </p>
+
+                      @endif
+
+                  </div>
+
+                  <div class="card-footer" style="background-color: rgb(233, 233, 233)">
+                    <div class="btn-group">
+                      <div class="col-xl-12 col-md-12">
+                        @if ($livraison->status_livraison == "en cours de validation")
+                          <p class="text-center"><span class="badge badge-primary">Livraison en cours de validation...</span></p>
+                          @if (isset($livraison->commande_id))
+                            <div class="row">
+                              <div class="btn-group">
+                                {{-- <button type="button" class="btn btn-success btn-sm rounded "  data-bs-toggle="modal" data-bs-target=".editlivraison_{{ $livraison->id }}">Reprendre la livraison</button type="button"> --}}
+                                  <form method="POST" action="{{ route('livraison.client.destroy_livraison_bouResto', $livraison->id) }}">
+                                    @csrf
+                                    
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-success btn-sm ms-3" data-original-title="btn btn-danger">Reprendre la livraison</button>
+                                  </form>
+                                  <form method="POST" action="{{ route('livraison.client.destroy', $livraison->id) }}">
+                                    @csrf
+                                    
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm ms-3" data-original-title="btn btn-danger">Suppression de la livraison</button>
+                                  </form>
+                              </div>
+                            </div>
+                          @else
+                            <div class="row">
+                              <div class="btn-group">
+                                <a class="btn btn-success btn-sm rounded" href="{{ route('livraison.client.edit', $livraison->id) }}" >Modification de la livraison</a>
+                                  <form method="POST" action="{{ route('livraison.client.destroy', $livraison->id) }}">
+                                    @csrf
+                                    
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm ms-3" data-original-title="btn btn-danger">Suppression de la livraison</button>
+                                  </form>
+                              </div>
+                            </div>
+                          @endif
+                          
+                        @elseif ($livraison->status_livraison == "Valider")
+                          <div class="text-center"><u><b>Status :</b></u><span class="badge badge-primary text-center ms-2">livraison validée...</span></div>
+                        @elseif ($livraison->status_livraison == "en cours de livraison")
+                          <div class="text-center"><u><b>Status :</b></u><span class="badge badge-primary ms-2">livraison en cours de livraison...</span></div>
+                        @elseif ($livraison->status_livraison == "Démarrer")
+                          <div class="text-center"><p><u><b>Status :</b></u><span class="badge badge-primary ms-2">livraison démarrée</span></p></div>
+                        @elseif ($livraison->status_livraison == "Terminer")
+                          <div class="btn-group" style="margin-left: 50px;">
+                            <a href="{{ route('livraison.client.payement_page', $livraison->id) }}" class="btn btn-success">Payer {{ $livraison->prix }} FCFA</a>
+                          </div>
+                        @elseif ($livraison->status_livraison == "Non payée")
+                            <div class="text-center"><p><u><b>Status :</b></u><span class="badge badge-warning ms-2">Payement en cours de confirmation</span></p></div>
+                        @elseif ($livraison->status_livraison == "Payée")
+                          <div class="text-center"><p><u><b>Status :</b></u><span class="badge badge-success ms-2">Payement effectué</span></p></div>
+                        @endif
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+            </div> 
+          @endif 
+        @endforeach
+
+
+
+
+
+
+<!-- <div class="col-sm-12">
+  <div class="card">
+      <div class="card-header">
+          <h6>Liste des Livraisons</h6>
+      </div>
+      <div class="card-body">
+          @foreach ($livraisons as $k => $livraisons_valider)
+            @if ($livraisons_valider->status_livraison == "en cours de validation" || $livraisons_valider->status_livraison == "Payée")
+            
+            @else
+              <div class="col-xl-5 col-sm-6">
+                  <div class="card">
+                    <div class="card-header" style="background-color: rgb(231, 228, 228)">
+                      @if ($livraisons_valider->status_livraison == "Valider")
+                        <div class="ribbon ribbon-danger">Nouveau</div>
+                      @elseif ($livraisons_valider->status_livraison == "en cours de livraison" || $livraisons_valider->status_livraison == "Démarrer")
+                        <div class="ribbon ribbon-success">En cours</div>
+                      @elseif ($livraisons_valider->status_livraison == "Terminer")
+                        <div class="ribbon ribbon-warning">En attente de Payement</div>
+                      @elseif ($livraisons_valider->status_livraison == "Non payée")
+                        <div class="ribbon ribbon-warning">En cours de Confirmation</div>
+                      @elseif ($livraisons_valider->status_livraison == "Payée")
+                        <div class="ribbon ribbon-warning">Terminer</div>
+                      @endif
+                      <div class="ribbon ribbon-primary ribbon-right"> +229 {{ $livraisons_valider->user->profile->phone }}</div>
+                            
+                      <div class="text-primary text-center pt-3">
+                        <h5 class="text-center">
+                          {{ $livraisons_valider->titre }}
+                          </h5>
+                      </div>
+                    </div>
+                    <div class="card-body" style="background-color: rgb(241, 241, 241)">
+                        {{-- <div class="rating text-warning"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                        </div> --}}
+                        <h6><u>Adresse de Départ:</u></h6>
+                        <p>{{ $livraisons_valider->adresse_depart }}</p>
+                        <h6><u>Adresse de Livraison:</u></h6>
+                        <p>{{ $livraisons_valider->adresse_arrivee }}</p>
+                        @if ($livraisons_valider->status_livraison == "Valider" || $livraisons_valider->status_livraison == "en cours de livraison" || $livraisons_valider->status_livraison == "Démarrer" || $livraisons_valider->status_livraison == "Terminer" || $livraisons_valider->status_livraison == "Non payée" || $livraisons_valider->status_livraison == "Payée")
+                          <h6><u>Prix de la livraison:</u></h6>
+                          <p>{{ $livraisons_valider->prix }}</p>
+                        @endif
+                        @if (isset($livraisons_valider->type_de_colis) && isset($livraisons_valider->messageLivreur))
+                          <h6><u>Type de colis:</u></h6>
+                          <p>{{ $livraisons_valider->type_de_colis }}</p>
+                          <h6><u>Message au Livreur:</u></h6>
+                          <p>{{ $livraisons_valider->messageLivreur }}</p>
+                        @else
+                          <h6><u>Liste des produits et Prix:</u></h6>
+                          <p>
+                            @if (!empty($livraisons_valider->commande->ligne_commandes))
+                              @foreach ($livraisons_valider->commande->ligne_commandes as $key => $value) 
+                                    <table class="table" border="1px">
+                                        <tr>
+                                            <td>{{ $value->nom_du_produit }}</td>
+                                            <td class="text-center">{{ $value->prix }} FCFA</td>
+                                        </tr>
+                                    </table>
+                                @endforeach
+                            @else
+                                    <table class="table" border="1px">
+                                        <tr>
+                                            <td>Pas de Produit</td>
+                                        </tr>
+                                    </table>
+                            @endif
+                          </p>
+
+                        @endif
+                        
+                        {{-- <h6><u>Liste des produits et Prix:</u></h6>
+                        <p>
+                          @if (!empty($livraisons_valider->commande->ligne_commandes))
+                            @foreach ($livraisons_valider->commande->ligne_commandes as $key => $value) 
+                                <table class="table" border="1px">
+                                    <tr>
+                                      <td>{{ $value->nom_du_produit }}</td>
+                                      <td class="text-center">{{ $value->prix }} FCFA</td>
+                                    </tr>
+                                </table>
+                            @endforeach
+                          @else
+                                <table class="table" border="1px">
+                                    <tr>
+                                        <td>Pas de Produit</td>
+                                    </tr>
+                                </table>
+                          @endif
+                        </p> --}}
+                    </div>
+
+                    <div class="card-footer" style="background-color: rgb(233, 233, 233)">
+                      <div class="btn-group">
+                        {{-- <div class="col-xl-6 mt-2 col-md-6 ms-5">
+                        </div> --}}
+                        @if ($livraisons_valider->status_livraison == "Valider")
+                            <a class="btn btn-primary" style="margin-left: 70px;" href="{{ route('livraison.livreur.accept_livraison', $livraisons_valider->id) }}" type="button">Accepter</a>
+                          @elseif ($livraisons_valider->status_livraison == "en cours de livraison")
+                            <a class="btn btn-primary" style="margin-left: 70px;" href="{{ route('livraison.livreur.start_livraison', $livraisons_valider->id) }}" type="button">Démarrer</a>
+                          @elseif ($livraisons_valider->status_livraison == "Démarrer")
+                            <a class="btn btn-primary" style="margin-left: 70px;" href="{{ route('livraison.livreur.end_livraison', $livraisons_valider->id) }}" type="button">Terminer</a>
+                          @elseif ($livraisons_valider->status_livraison == "Terminer")
+                            <b><u>Status:</u></b><div class="badge badge-warning ms-2">En attente de payement</div>
+                          @elseif ($livraisons_valider->status_livraison == "Non payée")
+                            <a href="{{ route('livraison.livreur.payement_confirme',  $livraisons_valider->id) }}" class="btn btn-primary ms-4">Confirmer payement</a>
+                          @elseif ($livraisons_valider->status_livraison == "Payée")
+                            <div class="text-center"><p><span class="badge badge-warning ms-5" style="font-size: 15px">Fin de la Livraison</span></p></div>
+                          @endif
+                        {{-- <div class="col-xl-6 col-md-6">
+                          
+                        </div> --}}
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            @endif  
+          @endforeach
+      </div>
+  </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+
+namespace App\Http\Controllers\client\courses;
+
+use App\Services\Log;
+use App\Models\Logactivity;
+use Illuminate\Http\Request;
+use App\Events\course\CourseEvent;
+use App\Http\Controllers\Controller;
+use App\Models\admin\courses\Course;
+use App\Services\NotificationCourse;
+use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
+
+class ClientCourseController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+
+        $courses = Course::where('user_id', Auth::user()->id)->where('status_livraison', 'en cours de validation')->get();
+        
+        #Course Valider
+        $courses_validers = Course::where('user_id', Auth::user()->id)->where('status_livraison', 'Valider')->get();
+        
+        #Course en cours de livraison
+        $courses_en_cours_livraisons = Course::where('user_id', Auth::user()->id)->where('status_livraison', 'en cours de livraison')->get();
+        
+        #Course en cours de démarrage
+        $courses_starts = Course::where('user_id', Auth::user()->id)->where('status_livraison', 'Démarrer')->get();
+        
+        #Course terminer
+        $courses_ends = Course::where('user_id', Auth::user()->id)->where('status_livraison', 'Terminer')->get();
+
+        return view('clients.courses.index', compact('courses', 'courses_validers', 'courses_en_cours_livraisons', 'courses_starts', 'courses_ends'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validation = $request->validate([
+            'titre'                => 'required',
+            'adresse_depart'       => 'required',
+            'adresse_livraison'    => 'required',
+            'date_de_livraison'    => 'required',
+            'description'          => 'required',
+            'numero_client'        => 'required',
+        ]);
+        
+        $tab_course = array(
+            'titre'                =>  $validation['titre'],
+            'adresse_depart'       =>  $validation['adresse_depart'],
+            'adresse_livraison'    =>  $validation['adresse_livraison'],
+            'date_de_livraison'    =>  $validation['date_de_livraison'],
+            'description'          =>  $validation['description'],
+            'numero_client'        =>  $validation['numero_client'],
+            'user_id'              =>  Auth::user()->id,
+        );
+
+        //dd($request->all(), $validation, $tab_course, Auth::user()->profile->first_name);
+        $course = Course::create($tab_course);
+        $log = array(
+            'subject' => "Créaction d'une course par l'utilisateur "."  ".Auth::user()->profile->first_name."  ".Auth::user()->profile->last_name,
+            'url' => $request->fullUrl(),
+            'method' => $request->method(),
+            'ip' => $request->ip(),
+            'agent' => $request->header('user-agent'),
+            'user_id' => auth()->check() ? auth()->user()->id : 1,
+        );
+
+        $activity_user = new Log();
+        $activity_user->logactivity($log);
+
+
+
+        #Notification vers le gestionnaire de commande
+
+        $validateData = array(
+            'user_id' => Auth::user()->id,
+            'course_id' => $course->id,
+            'type_de_notification' => 'Courses',
+            'status' => 'non lu',
+            'message'=>"Vous avez une nouvelle course de Mr/Mlle  ".Auth::user()->profile->first_name."  ".Auth::user()->profile->last_name,
+        );
+        
+        #dd($course->id);
+        $notification_message = new NotificationCourse; 
+        $notification_message->notification($validateData);
+        event(new CourseEvent($validateData));
+
+        Alert::success('Insection', 'Course crée avec succès.');
+        return redirect()->back()->with('success', 'Course crée avec succès.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $course = Course::find($id);
+        $validation = $request->validate([
+            'titre'                => 'required',
+            'adresse_depart'       => 'required',
+            'adresse_livraison'    => 'required',
+            'date_de_livraison'    => 'required',
+            'numero_client'        => 'required',
+            'description'          => 'required'
+        ]);
+        
+        $tab_course = array(
+            'titre'                =>  $validation['titre'],
+            'adresse_depart'       =>  $validation['adresse_depart'],
+            'adresse_livraison'    =>  $validation['adresse_livraison'],
+            'date_de_livraison'    =>  $validation['date_de_livraison'],
+            'numero_client'        =>  $validation['numero_client'],
+            'description'          =>  $validation['description'],
+            'user_id'              =>  Auth::user()->id,
+        );
+
+        //dd($request->all(), $validation, $tab_course, Auth::user()->profile->first_name);
+        Course::whereId($id)->update($tab_course);
+        $log = array(
+            'subject' => "Modification d'une course par l'utilisateur "."  ".Auth::user()->profile->first_name."  ".Auth::user()->profile->last_name,
+            'url' => $request->fullUrl(),
+            'method' => $request->method(),
+            'ip' => $request->ip(),
+            'agent' => $request->header('user-agent'),
+            'user_id' => auth()->check() ? auth()->user()->id : 1,
+        );
+
+        Logactivity::create($log);
+        Alert::success('Modification', 'Course modifiée avec succès.');
+        return redirect()->back()->with('success', 'Course modifiée avec succès.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id, Request $request)
+    {
+        $course = Course::find($id);
+        Course::whereId($id)->delete();
+        $log = array(
+            'subject' => "Suppression d'une course par l'utilisateur "."  ".Auth::user()->profile->first_name."  ".Auth::user()->profile->last_name,
+            'url' => $request->fullUrl(),
+            'method' => $request->method(),
+            'ip' => $request->ip(),
+            'agent' => $request->header('user-agent'),
+            'user_id' => auth()->check() ? auth()->user()->id : 1,
+        );
+
+        Logactivity::create($log);
+        Alert::success('Suppression', 'Course supprimée avec succès.');
+        return redirect()->back();
+    }
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cuba admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Cuba admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="pixelstrap">
+    <link rel="icon" href="../assets/images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/images/favicon.png" type="image/x-icon">
+    <title>Any Course</title>
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <style type="text/css">
+      body{
+      width: 650px;
+      font-family: work-Sans, sans-serif;
+      background-color: #f6f7fb;
+      display: block;
+      }
+      a{
+      text-decoration: none;
+      }
+      span {
+      font-size: 14px;
+      }
+      p {
+        font-size: 13px;
+        line-height: 1.7;
+        letter-spacing: 0.7px;
+        margin-top: 0;
+      }
+      .text-center{
+      text-align: center
+      }
+      h6 {
+      font-size: 16px;
+      margin: 0 0 18px 0;
+      }
+    </style>
+  </head>
+  <body style="margin: 30px auto;">
+    <table style="width: 100%">
+      <tbody>
+        <tr>
+          <td>
+            <table style="background-color: #f6f7fb; width: 100%">
+              <tbody>
+                <tr>
+                  <td>
+                    <table style="width: 650px; margin: 0 auto; margin-bottom: 30px">
+                      <tbody>
+                        <tr>
+                          <td><img src="{{ asset('images/logo_1.jpg')}}" alt=""></td>
+                          <td style="text-align: right; color:#999"><span>Some Description</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table style="width: 650px; margin: 0 auto; background-color: #fff; border-radius: 8px">
+              <tbody>
+                <tr>
+                  <td style="padding: 30px"> 
+                    <h6 style="font-weight: 600">Réinitialisation du mot de passe</h6>
+                    <p>Hi Mr/Mlle</p>
+                    <p>
+                        Merci pour l'enregistrement! Avant de commencer, pourriez-vous vérifier votre adresse e-mail en cliquant sur le lien que nous venons de vous envoyer ? Si vous n'avez pas reçu l'e-mail, nous vous en enverrons un autre avec plaisir.
+                    </p>
+
+                    <p>Un nouveau lien de vérification a été envoyé à l'adresse e-mail que vous avez fournie lors de l'inscription.</p>
+                    <p style="text-align: center">
+                        <form method="POST" action="{{ route('verification.send') }}">
+                            @csrf
+                
+                            <div>
+                                <a type="submit" class="btn" style="padding: 10px; background-color: #fe9003; color: #fff; display: inline-block; border-radius: 4px">
+                                    Réinitialiser le mot de passe
+                            </div>
+                        </form>
+                        </a>
+                    </p>
+                    <p>Si vous vous souvenez de votre mot de passe, vous pouvez ignorer son e-mail en toute sécurité./p>
+                    <p>Bonne chance! Esperons que ça marche.</p>
+                    <p style="margin-bottom: 0">
+                      Regards,<br>Any Course</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table style="width: 650px; margin: 0 auto; margin-top: 30px">
+              <tbody>       
+                <tr style="text-align: center">
+                  <td> 
+                  {{--   <p style="color: #999; margin-bottom: 0">333 Woodland Rd. Baldwinsville, NY 13027</p>
+                    <p style="color: #999; margin-bottom: 0">Don't Like These Emails?<a href="#" style="color: #7366ff">Unsubscribe</a></p>
+                    --}} 
+                    <p style="color: #999; margin-bottom: 0">Powered By Any Course</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
